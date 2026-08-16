@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Veritabanını Temizle</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f1e8;
+            color: #333;
+        }
+
+        .sayfa {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .baslik {
+            background: #8b3a3a;
+            color: white;
+            text-align: center;
+            padding: 28px 15px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .baslik h1 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        .kart {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .uyari {
+            background: #fff3e0;
+            color: #7a4a00;
+            padding: 16px;
+            border-radius: 15px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        label {
+            display: block;
+            font-size: 19px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 18px;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            font-size: 18px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #8b3a3a;
+        }
+
+        .buton {
+            width: 100%;
+            border: none;
+            border-radius: 15px;
+            padding: 20px 15px;
+            font-size: 20px;
+            font-weight: bold;
+            background: #8b3a3a;
+            color: white;
+            margin-top: 22px;
+            cursor: pointer;
+        }
+
+        .mesaj {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .basarili {
+            background: #e4f5e9;
+            color: #176b5b;
+        }
+
+        .hata {
+            background: #ffe5e5;
+            color: #9b0000;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sayfa">
+
+    <div class="baslik">
+        <h1>⚠️ VERİTABANINI TEMİZLE</h1>
+    </div>
+
+    <div class="kart">
+
+        <div class="uyari">
+            Bu işlem TÜM kullanıcıları, hatimleri ve cüzleri kalıcı olarak siler.
+            Geri alınamaz. Sadece test verilerini temizlemek veya baştan başlamak
+            istediğinde kullan.
+        </div>
+
+        <label for="sifre">
+            Şifre
+        </label>
+
+        <input
+            id="sifre"
+            type="password"
+            placeholder="Şifreyi yazınız"
+        >
+
+        <button
+            class="buton"
+            onclick="temizle()">
+
+            🗑️ HER ŞEYİ SİL
+
+        </button>
+
+        <div
+            id="mesaj"
+            class="mesaj">
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="config.js"></script>
+
+<script>
+
+async function temizle() {
+
+    const sifre =
+        document.getElementById("sifre").value;
+
+    const mesaj =
+        document.getElementById("mesaj");
+
+    mesaj.style.display = "none";
+
+    if (!sifre) {
+        return;
+    }
+
+    const onay = confirm(
+        "Tüm kullanıcılar, hatimler ve cüzler kalıcı olarak silinecek. " +
+        "Emin misiniz?"
+    );
+
+    if (!onay) {
+        return;
+    }
+
+    try {
+
+        const cevap = await fetch(
+            `${API}/admin/temizle`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    sifre: sifre
+                })
+            }
+        );
+
+        const sonuc = await cevap.json();
+
+        mesaj.className =
+            "mesaj " + (sonuc.basarili ? "basarili" : "hata");
+
+        mesaj.innerText = sonuc.mesaj;
+
+        mesaj.style.display = "block";
+
+        if (sonuc.basarili) {
+            localStorage.removeItem("kullanici_id");
+            localStorage.removeItem("kullanici_adi");
+        }
+
+    }
+
+    catch (hata) {
+
+        console.error(hata);
+
+        mesaj.className = "mesaj hata";
+        mesaj.innerText = "Bağlantı kurulamadı. Lütfen tekrar deneyiniz.";
+        mesaj.style.display = "block";
+
+    }
+
+}
+
+</script>
+
+</body>
+
+</html>

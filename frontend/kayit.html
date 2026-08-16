@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hatimimize Hoş Geldiniz</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f1e8;
+            color: #333;
+        }
+
+        .sayfa {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .baslik {
+            background: #176b5b;
+            color: white;
+            text-align: center;
+            padding: 30px 15px;
+            border-radius: 20px;
+        }
+
+        .baslik h1 {
+            font-size: 30px;
+            margin: 0;
+        }
+
+        .hosgeldiniz {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 25px 0;
+        }
+
+        .kart {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        label {
+            display: block;
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            font-size: 22px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #176b5b;
+        }
+
+        .telefon-kutusu {
+            display: flex;
+            align-items: stretch;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .telefon-kutusu:focus-within {
+            border-color: #176b5b;
+        }
+
+        .on-ek {
+            display: flex;
+            align-items: center;
+            padding: 0 6px 0 18px;
+            font-size: 22px;
+            font-weight: bold;
+            background: #f5f1e8;
+            color: #176b5b;
+        }
+
+        .telefon-kutusu input {
+            border: none;
+            width: 100%;
+        }
+
+        .buton {
+            width: 100%;
+            border: none;
+            border-radius: 18px;
+            padding: 24px 15px;
+            font-size: 25px;
+            font-weight: bold;
+            background: #176b5b;
+            color: white;
+            margin-top: 30px;
+            cursor: pointer;
+        }
+
+        .mesaj {
+            text-align: center;
+            font-size: 21px;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 15px;
+            display: none;
+            white-space: pre-line;
+        }
+
+        .basarili {
+            background: #e4f5e9;
+            color: #176b5b;
+        }
+
+        .hata {
+            background: #ffe5e5;
+            color: #9b0000;
+        }
+
+        .alt {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 25px;
+        }
+
+        .alt a {
+            color: #176b5b;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sayfa">
+
+    <div class="baslik">
+        <h1>🕋 HATİMİMİZE HOŞ GELDİNİZ</h1>
+    </div>
+
+    <div class="hosgeldiniz">
+        🌷 Allah kabul etsin
+    </div>
+
+    <div class="kart">
+
+        <label for="ad">
+            Adınız Soyadınız
+        </label>
+
+        <input
+            id="ad"
+            type="text"
+            placeholder="Adınızı ve soyadınızı yazınız"
+        >
+
+
+        <label for="telefon">
+            Telefon Numaranız
+        </label>
+
+        <div class="telefon-kutusu">
+
+            <span class="on-ek">0</span>
+
+            <input
+                id="telefon"
+                type="tel"
+                inputmode="numeric"
+                maxlength="10"
+                placeholder="5XX XXX XX XX"
+            >
+
+        </div>
+
+
+        <button
+            class="buton"
+            onclick="kayitOl()">
+
+            🌷 KAYIT OL
+
+        </button>
+
+
+        <div
+            id="mesaj"
+            class="mesaj">
+        </div>
+
+        <div class="alt">
+            Zaten hesabınız var mı?
+            <a href="giris.html">Giriş yapın</a>
+        </div>
+
+    </div>
+
+
+    <div class="alt">
+        Allah hatmimizi kabul eylesin. 🤲
+    </div>
+
+</div>
+
+
+<script src="config.js"></script>
+
+<script>
+
+
+// Telefon kutusuna sadece rakam girilebilsin, en fazla 10 hane
+document.getElementById("telefon").addEventListener("input", function () {
+    this.value = this.value.replace(/\D/g, "").slice(0, 10);
+});
+
+
+function telefonuTopla() {
+
+    const hane =
+        document.getElementById("telefon")
+        .value
+        .trim();
+
+    if (hane.length !== 10 || hane[0] !== "5") {
+        return null;
+    }
+
+    return "0" + hane;
+}
+
+
+async function kayitOl() {
+
+    const ad =
+        document.getElementById("ad").value.trim();
+
+    const mesaj =
+        document.getElementById("mesaj");
+
+
+    mesaj.style.display = "none";
+
+
+    if (!ad) {
+
+        mesaj.className =
+            "mesaj hata";
+
+        mesaj.innerText =
+            "Lütfen adınızı ve soyadınızı yazınız.";
+
+        mesaj.style.display = "block";
+
+        return;
+    }
+
+
+    const telefon = telefonuTopla();
+
+    if (!telefon) {
+
+        mesaj.className =
+            "mesaj hata";
+
+        mesaj.innerText =
+            "Lütfen 5 ile başlayan 10 haneli telefon numaranızı yazınız.\n" +
+            "Örnek: 505 058 84 34";
+
+        mesaj.style.display = "block";
+
+        return;
+    }
+
+
+    try {
+
+        const cevap = await fetch(
+            `${API}/users`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+                    name: ad,
+                    phone: telefon
+                })
+            }
+        );
+
+
+        const sonuc =
+            await cevap.json();
+
+
+        if (!sonuc.basarili) {
+
+            mesaj.className =
+                "mesaj hata";
+
+            mesaj.innerText =
+                sonuc.mesaj ||
+                "Kayıt sırasında bir sorun oluştu.";
+
+            mesaj.style.display =
+                "block";
+
+            return;
+        }
+
+
+        // Kayıt başarılıysa kullanıcıyı otomatik olarak giriş yapmış say
+        localStorage.setItem(
+            "kullanici_id",
+            sonuc.id
+        );
+
+        localStorage.setItem(
+            "kullanici_adi",
+            sonuc.name
+        );
+
+
+        mesaj.className =
+            "mesaj basarili";
+
+        mesaj.innerText =
+            "🌷 Kaydınız başarıyla oluşturuldu.\n" +
+            "Allah kabul etsin.\n\n" +
+            "Hatim sayfanız açılıyor...";
+
+        mesaj.style.display =
+            "block";
+
+
+        setTimeout(function() {
+
+            window.location.href =
+                "panel.html";
+
+        }, 1200);
+
+
+    }
+
+    catch (hata) {
+
+        console.error(hata);
+
+        mesaj.className =
+            "mesaj hata";
+
+        mesaj.innerText =
+            "Bağlantı kurulamadı. " +
+            "Lütfen tekrar deneyiniz.";
+
+        mesaj.style.display =
+            "block";
+    }
+
+}
+
+</script>
+
+</body>
+</html>
