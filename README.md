@@ -68,7 +68,7 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-Sunucu `http://127.0.0.1:8000` adresinde çalışmaya başlar. İlk açılışta otomatik olarak
+Sunucu `https://hatim-takip.onrender.com' adresinde çalışmaya başlar. İlk açılışta otomatik olarak
 `hatim.db` adında bir SQLite dosyası oluşturulur.
 
 Ardından `frontend/index.html` dosyasını tarayıcıda aç — otomatik olarak kayıt/giriş
