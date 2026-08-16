@@ -5,4 +5,4 @@
 // kendi backend adresinle değiştirmen yeterli - tüm sayfalar otomatik olarak
 // yeni adresi kullanır, her dosyayı tek tek değiştirmene gerek kalmaz.
 
-const API = "http://127.0.0.1:8000";
+const API = "https://hatim-takip.onrender.com";
