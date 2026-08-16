@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Genel Durum - Hatim Takip</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f1e8;
+            color: #333;
+        }
+
+        .sayfa {
+            max-width: 700px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .baslik {
+            background: #176b5b;
+            color: white;
+            text-align: center;
+            padding: 28px 15px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .baslik h1 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+        .geri {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: #176b5b;
+            font-weight: bold;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+        .hatim-bilgi {
+            background: white;
+            border-radius: 15px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 18px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .hatim-bilgi .adi {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .cuz-karti {
+            background: white;
+            border-radius: 15px;
+            padding: 16px 10px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-top: 6px solid #ddd;
+        }
+
+        .cuz-karti.okundu {
+            border-top-color: #176b5b;
+        }
+
+        .cuz-karti.bos {
+            border-top-color: #cc8f2f;
+        }
+
+        .cuz-no {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .cuz-kisi {
+            margin-top: 8px;
+            font-size: 15px;
+            min-height: 20px;
+        }
+
+        .cuz-durum {
+            margin-top: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .yukleniyor, .hata {
+            text-align: center;
+            font-size: 20px;
+            padding: 25px;
+        }
+
+        .hata {
+            background: #ffe5e5;
+            color: #9b0000;
+            border-radius: 15px;
+        }
+
+        .hata a {
+            color: #9b0000;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sayfa">
+
+    <div class="baslik">
+        <h1>📋 GENEL DURUM</h1>
+    </div>
+
+    <a class="geri" href="panel.html">← Geri dön</a>
+
+    <div id="icerik">
+        <div class="yukleniyor">
+            Bilgiler getiriliyor...
+        </div>
+    </div>
+
+</div>
+
+
+<script src="config.js"></script>
+
+<script>
+
+
+async function durumuGetir() {
+
+    const icerik =
+        document.getElementById("icerik");
+
+    try {
+
+        // Önce aktif hatmi bul
+        const aktifCevap = await fetch(`${API}/hatims/aktif`);
+        const aktif = await aktifCevap.json();
+
+        if (!aktif.basarili) {
+
+            icerik.innerHTML = `
+                <div class="hata">
+                    Şu anda aktif bir hatim yok.
+                    <br><br>
+                    <a href="hatim-baslat.html">Yeni bir hatim başlatabilirsiniz.</a>
+                    <br>
+                    <a href="biten-hatimler.html">Tamamlanan hatimleri görebilirsiniz.</a>
+                </div>
+            `;
+
+            return;
+        }
+
+        const cevap = await fetch(
+            `${API}/hatims/${aktif.hatim_id}/cuzler-listesi`
+        );
+
+        if (!cevap.ok) {
+            throw new Error("Liste alınamadı.");
+        }
+
+        const veri = await cevap.json();
+
+        if (!veri.basarili) {
+            throw new Error(veri.mesaj || "Liste alınamadı.");
+        }
+
+        let html = `
+            <div class="hatim-bilgi">
+                <div class="adi">🕋 ${veri.hatim_adi}</div>
+            </div>
+            <div class="grid">
+        `;
+
+        veri.cuzler.forEach(function(cuz) {
+
+            let sinif = "cuz-karti";
+            let durumYazisi = "";
+            let kisiYazisi = "Boşta";
+
+            if (!cuz.atanmis) {
+                sinif += " bos";
+                durumYazisi = "🟠 Kimseye atanmadı";
+            } else {
+                kisiYazisi = cuz.kullanici;
+
+                if (cuz.okundu) {
+                    sinif += " okundu";
+                    durumYazisi = "🟢 Okundu";
+                } else {
+                    durumYazisi = "🟡 Henüz okunmadı";
+                }
+            }
+
+            html += `
+                <div class="${sinif}">
+                    <div class="cuz-no">📖 ${cuz.cuz_no}. Cüz</div>
+                    <div class="cuz-kisi">${kisiYazisi}</div>
+                    <div class="cuz-durum">${durumYazisi}</div>
+                </div>
+            `;
+
+        });
+
+        html += `</div>`;
+
+        icerik.innerHTML = html;
+
+    }
+
+    catch (hata) {
+
+        console.error(hata);
+
+        icerik.innerHTML = `
+            <div class="hata">
+                Bilgiler alınamadı.<br><br>
+                Lütfen biraz sonra tekrar deneyin.
+            </div>
+        `;
+
+    }
+
+}
+
+
+durumuGetir();
+
+</script>
+
+</body>
+
+</html>

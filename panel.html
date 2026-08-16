@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hatim Takip</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f1e8;
+            color: #333;
+        }
+
+        .sayfa {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .baslik {
+            background: #176b5b;
+            color: white;
+            text-align: center;
+            padding: 28px 15px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .baslik h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .hosgeldiniz {
+            text-align: center;
+            font-size: 26px;
+            font-weight: bold;
+            margin: 25px 0;
+        }
+
+        .kart {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .kart-baslik {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .cuz-karti {
+            background: #f5f1e8;
+            border-radius: 15px;
+            padding: 18px;
+            margin: 12px 0;
+            text-align: left;
+        }
+
+        .cuz-numara {
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .cuz-hatim-adi {
+            font-size: 17px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .cuz-durum {
+            font-size: 20px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .buton {
+            width: 100%;
+            border: none;
+            border-radius: 18px;
+            padding: 22px 15px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            background: #176b5b;
+            color: white;
+            margin-top: 15px;
+        }
+
+        .buton:active {
+            transform: scale(0.98);
+        }
+
+        .buton-ikincil {
+            background: #cc8f2f;
+        }
+
+        .istatistik {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .istatistik-kutu {
+            flex: 1;
+            background: #f5f1e8;
+            border-radius: 15px;
+            padding: 18px 8px;
+        }
+
+        .sayi {
+            font-size: 34px;
+            font-weight: bold;
+        }
+
+        .aciklama {
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        .ilerleme {
+            margin-top: 25px;
+            height: 28px;
+            background: #ddd;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .ilerleme-dolgu {
+            height: 100%;
+            width: 0%;
+            background: #176b5b;
+            transition: width 0.5s;
+        }
+
+        .yuzde {
+            font-size: 26px;
+            font-weight: bold;
+            margin-top: 12px;
+        }
+
+        .hatim-adi {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .hatim-tarih {
+            font-size: 16px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .dua {
+            font-size: 21px;
+            line-height: 1.7;
+        }
+
+        .alt {
+            text-align: center;
+            font-size: 18px;
+            margin: 25px 0;
+        }
+
+        .yukleniyor {
+            font-size: 20px;
+            padding: 15px;
+        }
+
+        .hata {
+            background: #ffe5e5;
+            color: #9b0000;
+            padding: 18px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .cikis {
+            background: #8b3a3a;
+        }
+
+        @media (max-width: 450px) {
+
+            .baslik h1 {
+                font-size: 28px;
+            }
+
+            .hosgeldiniz {
+                font-size: 23px;
+            }
+
+            .buton {
+                font-size: 19px;
+            }
+
+            .sayi {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+<div class="sayfa">
+
+    <div class="baslik">
+        <h1>🕋 HATİM TAKİP</h1>
+    </div>
+
+
+    <div class="hosgeldiniz" id="hosgeldiniz">
+        Hoş Geldiniz 🌷
+    </div>
+
+
+    <div class="kart" id="aktifHatimAlani">
+        <div class="yukleniyor">Aktif hatim kontrol ediliyor...</div>
+    </div>
+
+
+    <div class="kart" id="cuzlerimAlani" style="display:none;">
+
+        <div class="kart-baslik">
+            📖 Cüzlerim
+        </div>
+
+        <div id="cuzlerAlani">
+            <div class="yukleniyor">
+                Bilgiler getiriliyor...
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="kart">
+
+        <div class="kart-baslik">
+            🤲 Duamız
+        </div>
+
+        <div class="dua">
+            Allah'ım, okuduğumuz Kur'an-ı Kerim'i
+            kabul eyle.
+            <br><br>
+            Hatmimizi tamamlamayı nasip eyle.
+            <br><br>
+            Hepimizin dualarını kabul eyle.
+            Âmin. 🤲
+        </div>
+
+    </div>
+
+
+    <div class="kart">
+
+        <button
+            class="buton"
+            onclick="window.location.href='genel-durum.html'">
+
+            📋 HERKESİN DURUMUNU GÖR
+
+        </button>
+
+        <button
+            class="buton buton-ikincil"
+            onclick="window.location.href='biten-hatimler.html'">
+
+            ✅ TAMAMLANAN HATİMLER
+
+        </button>
+
+        <button
+            class="buton cikis"
+            onclick="cikisYap()">
+
+            ÇIKIŞ YAP
+
+        </button>
+
+    </div>
+
+
+    <div class="alt">
+        Allah kabul etsin. 🌷
+    </div>
+
+</div>
+
+
+<script src="config.js"></script>
+
+<script>
+
+
+const KULLANICI_ID =
+    Number(
+        localStorage.getItem("kullanici_id")
+    );
+
+
+if (!KULLANICI_ID) {
+    window.location.href = "giris.html";
+}
+
+
+let AKTIF_HATIM_ID = null;
+
+
+/* ==========================
+   SAYFA AÇILINCA ÇALIŞ
+========================== */
+
+async function baslat() {
+    await aktifHatimiGetirVeGoster();
+    await cuzlerimiGetir();
+}
+
+
+/* ==========================
+   AKTİF HATİM
+========================== */
+
+async function aktifHatimiGetirVeGoster() {
+
+    const alan =
+        document.getElementById("aktifHatimAlani");
+
+    try {
+
+        const cevap = await fetch(`${API}/hatims/aktif`);
+        const veri = await cevap.json();
+
+        if (!veri.basarili) {
+
+            AKTIF_HATIM_ID = null;
+
+            alan.innerHTML = `
+                <div class="kart-baslik">🕋 Aktif Hatim Yok</div>
+                <div style="font-size:18px; margin-bottom: 10px;">
+                    Şu anda devam eden bir hatim bulunmuyor.
+                </div>
+                <button class="buton" onclick="window.location.href='hatim-baslat.html'">
+                    ✨ YENİ HATİM BAŞLAT
+                </button>
+            `;
+
+            return;
+        }
+
+        AKTIF_HATIM_ID = veri.hatim_id;
+
+        const baslama = new Date(veri.baslama_tarihi)
+            .toLocaleDateString("tr-TR");
+
+        const bitis = new Date(veri.bitis_tarihi)
+            .toLocaleDateString("tr-TR");
+
+        const durumCevap = await fetch(
+            `${API}/hatims/${veri.hatim_id}/durum`
+        );
+
+        const durum = await durumCevap.json();
+
+        alan.innerHTML = `
+            <div class="hatim-adi">🕋 ${veri.adi}</div>
+            <div class="hatim-tarih">
+                ${baslama} - ${bitis}
+            </div>
+
+            <div class="istatistik">
+                <div class="istatistik-kutu">
+                    <div class="sayi">${durum.okunan_cuz}</div>
+                    <div class="aciklama">Okunan</div>
+                </div>
+                <div class="istatistik-kutu">
+                    <div class="sayi">${durum.alinan_cuz}</div>
+                    <div class="aciklama">Alınan</div>
+                </div>
+                <div class="istatistik-kutu">
+                    <div class="sayi">${30 - durum.alinan_cuz}</div>
+                    <div class="aciklama">Boşta</div>
+                </div>
+            </div>
+
+            <div class="ilerleme">
+                <div class="ilerleme-dolgu" style="width:${durum.ilerleme_yuzdesi}%;"></div>
+            </div>
+
+            <div class="yuzde">%${durum.ilerleme_yuzdesi} Tamamlandı</div>
+
+            <button
+                class="buton"
+                id="cuzSecButonu"
+                onclick="window.location.href='cuz-sec.html'">
+
+                🌷 CÜZ SEÇ
+
+            </button>
+        `;
+
+    }
+
+    catch (hata) {
+
+        console.error(hata);
+
+        alan.innerHTML = `
+            <div class="hata">
+                Hatim bilgisi alınamadı.
+                Lütfen biraz sonra tekrar deneyin.
+            </div>
+        `;
+
+    }
+
+}
+
+
+/* ==========================
+   CÜZLERİM
+========================== */
+
+async function cuzlerimiGetir() {
+
+    const kart =
+        document.getElementById("cuzlerimAlani");
+
+    const alan =
+        document.getElementById("cuzlerAlani");
+
+    try {
+
+        const cevap = await fetch(
+            `${API}/users/${KULLANICI_ID}/cuzler`
+        );
+
+        if (!cevap.ok) {
+            throw new Error("Kullanıcı bilgileri alınamadı.");
+        }
+
+        const veri = await cevap.json();
+
+        document.getElementById("hosgeldiniz").innerText =
+            "Hoş Geldiniz " + veri.kullanici + " 🌷";
+
+        if (!veri.cuzler || veri.cuzler.length === 0) {
+            kart.style.display = "none";
+            return;
+        }
+
+        kart.style.display = "block";
+
+        cuzleriGoster(veri.cuzler);
+
+    }
+
+    catch (hata) {
+
+        console.error(hata);
+
+        kart.style.display = "block";
+
+        alan.innerHTML = `
+            <div class="hata">
+                Bilgiler alınamadı.
+                <br><br>
+                Lütfen biraz sonra tekrar deneyin.
+            </div>
+        `;
+
+    }
+
+}
+
+
+function cuzleriGoster(cuzler) {
+
+    const alan =
+        document.getElementById("cuzlerAlani");
+
+    let html = "";
+
+    cuzler.forEach(function(cuz) {
+
+        html += `
+            <div class="cuz-karti">
+                <div class="cuz-numara">📖 ${cuz.cuz_no}. Cüz</div>
+                <div class="cuz-hatim-adi">${cuz.hatim_adi || ""}</div>
+                <div class="cuz-durum">
+                    ${cuz.okundu ? "🟢 Okundu" : "🟡 Henüz okunmadı"}
+                </div>
+                ${
+                    !cuz.okundu
+                    ? `<button class="buton" onclick="cuzuOkudum(${cuz.cuz_id})">🤲 CÜZÜMÜ OKUDUM</button>`
+                    : ""
+                }
+            </div>
+        `;
+
+    });
+
+    alan.innerHTML = html;
+
+}
+
+
+/* ==========================
+   CÜZÜ OKUDUM
+========================== */
+
+async function cuzuOkudum(cuzId) {
+
+    const onay =
+        confirm("Bu cüzü okudum olarak işaretlemek istiyor musunuz?");
+
+    if (!onay) {
+        return;
+    }
+
+    try {
+
+        const cevap = await fetch(
+            `${API}/cuzler/${cuzId}/okundu`,
+            { method: "PUT" }
+        );
+
+        if (!cevap.ok) {
+            alert("Bir sorun oluştu.");
+            return;
+        }
+
+        const sonuc = await cevap.json();
+
+        if (sonuc.hatim_tamamlandi) {
+            alert(
+                "🕋 Allah kabul etsin!\n\n" +
+                "Bu hatimdeki son cüz de okundu ve hatim tamamlandı. 🌷"
+            );
+        } else {
+            alert(
+                "🌷 Allah kabul etsin.\n\n" +
+                "Cüzünüz başarıyla okundu olarak işaretlendi."
+            );
+        }
+
+        await baslat();
+
+    }
+
+    catch (hata) {
+
+        console.error(hata);
+
+        alert("Bilgiler kaydedilirken bir sorun oluştu.");
+
+    }
+
+}
+
+
+/* ==========================
+   ÇIKIŞ YAP
+========================== */
+
+function cikisYap() {
+
+    localStorage.removeItem("kullanici_id");
+    localStorage.removeItem("kullanici_adi");
+
+    window.location.href = "giris.html";
+
+}
+
+
+baslat();
+
+</script>
+
+</body>
+
+</html>
